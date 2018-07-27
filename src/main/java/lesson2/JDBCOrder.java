@@ -1,8 +1,8 @@
-package lesson1;
+package lesson2;
 
 import java.sql.*;
 
-public class JDBCFirstStep {
+public class JDBCOrder {
     private static final String JDBC_DRIVER = "oracle.jdbc.driver.OracleDriver";
     private static final String DB_URL = "jdbc:oracle:thin:@gromcode.c4qju9dqz8qa.us-east-2.rds.amazonaws.com:1521:ORCL";
 
@@ -26,9 +26,16 @@ public class JDBCFirstStep {
                 return;
             }
 
-            try (ResultSet resultSet = statement.executeQuery("SELECT * FROM Orders")) {
+            try (ResultSet resultSet = statement.executeQuery("SELECT * FROM Orders WHERE PRICE > 5000")) {
                 while (resultSet.next()) {
-                    System.out.println(resultSet.getString(2));
+                    long id = resultSet.getLong(1);
+                    String productName = resultSet.getString(2);
+                    int price = resultSet.getInt(3);
+                    Date dateOrdered = resultSet.getDate(4);
+                    Date dateConfirmed = resultSet.getDate(5);
+                    Order order  = new Order(id, productName, price, dateOrdered, dateConfirmed);
+
+                    System.out.println(order);
                 }
             }
         } catch (SQLException e) {

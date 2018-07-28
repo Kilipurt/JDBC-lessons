@@ -8,7 +8,7 @@ public class Demo {
 
         //System.out.println(Solution.getAllProducts());
         //System.out.println(Solution.getProductsByPrice());
-        //System.out.println(Solution.getProductsByDescription());
+        System.out.println(Solution.getProductsByDescription());
 
         //Solution.increasePrice();
         System.out.println(Solution.getAllProducts());

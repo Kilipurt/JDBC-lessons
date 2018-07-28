@@ -119,7 +119,7 @@ public class Solution {
         try (Connection connection = createConnection()) {
 
             PreparedStatement preparedStatement = connection.prepareStatement(getProductsByDescriptionQuery);
-            preparedStatement.setString(1, "20");
+            preparedStatement.setString(1, "100");
             ResultSet resultSet = preparedStatement.executeQuery();
 
             ArrayList<Product> allProducts = mapToObjects(resultSet);

@@ -14,9 +14,8 @@ public class Solution {
     private static final String deleteProductsByPriceQuery = "DELETE FROM PRODUCT WHERE PRICE < 100";
     private static final String getAllProductsQuery = "SELECT * FROM PRODUCT";
     private static final String getProductsByPriceQuery = "SELECT * FROM PRODUCT WHERE PRICE <= 100";
-    private static final String getProductsByDescriptionQuery = "SELECT * FROM PRODUCT WHERE LENGTH(DESCRIPTION) > 50";
+    private static final String getProductsByDescriptionQuery = "SELECT * FROM PRODUCT WHERE LENGTH(DESCRIPTION) > ?";
     private static final String increasePriceQuery = "UPDATE PRODUCT SET PRICE = PRICE + 100 WHERE PRICE < 970";
-    private static final String getProdByDescriptionQuery = "SELECT * FROM PRODUCT WHERE LENGTH(DESCRIPTION) > 20";
     private static final String updateProductsDescription = "UPDATE PRODUCT SET DESCRIPTION = ? WHERE ID = ?";
 
     public static void saveProduct() {
@@ -88,10 +87,11 @@ public class Solution {
     }
 
     public static ArrayList<Product> getProductsByDescription() {
-        try (Connection connection = createConnection();
-             Statement statement = connection.createStatement()) {
+        try (Connection connection = createConnection()) {
 
-            ResultSet resultSet = statement.executeQuery(getProductsByDescriptionQuery);
+            PreparedStatement preparedStatement = connection.prepareStatement(getProductsByDescriptionQuery);
+            preparedStatement.setString(1, "50");
+            ResultSet resultSet = preparedStatement.executeQuery();
 
             return mapToObjects(resultSet);
 
@@ -116,17 +116,18 @@ public class Solution {
     }
 
     public static void changeDescription() {
-        try (Connection connection = createConnection();
-             Statement statement = connection.createStatement()) {
+        try (Connection connection = createConnection()) {
 
-            ResultSet resultSet = statement.executeQuery(getProdByDescriptionQuery);
+            PreparedStatement preparedStatement = connection.prepareStatement(getProductsByDescriptionQuery);
+            preparedStatement.setString(1, "20");
+            ResultSet resultSet = preparedStatement.executeQuery();
 
             ArrayList<Product> allProducts = mapToObjects(resultSet);
             for (Product product : allProducts) {
-                PreparedStatement preparedStatement = connection.prepareStatement(updateProductsDescription);
-                preparedStatement.setString(1, deleteLastSentence(product.getDescription()));
-                preparedStatement.setLong(2, product.getId());
-                preparedStatement.executeUpdate();
+                PreparedStatement statement = connection.prepareStatement(updateProductsDescription);
+                statement.setString(1, deleteLastSentence(product.getDescription()));
+                statement.setLong(2, product.getId());
+                statement.executeUpdate();
             }
         } catch (SQLException e) {
             System.err.println("Something went wrong");

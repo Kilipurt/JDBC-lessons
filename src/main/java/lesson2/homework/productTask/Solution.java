@@ -9,11 +9,21 @@ public class Solution {
     private static final String USER = "main";
     private static final String PASS = "2016UKRainian";
 
+    private static final String saveProductQuery = "INSERT INTO PRODUCT VALUES (999, 'toy', 'for children', 60)";
+    private static final String deleteProductsQuery = "DELETE FROM PRODUCT WHERE NAME = 'toy'";
+    private static final String deleteProductsByPriceQuery = "DELETE FROM PRODUCT WHERE PRICE < 100";
+    private static final String getAllProductsQuery = "SELECT * FROM PRODUCT";
+    private static final String getProductsByPriceQuery = "SELECT * FROM PRODUCT WHERE PRICE <= 100";
+    private static final String getProductsByDescriptionQuery = "SELECT * FROM PRODUCT WHERE LENGTH(DESCRIPTION) > 50";
+    private static final String increasePriceQuery = "UPDATE PRODUCT SET PRICE = PRICE + 100 WHERE PRICE < 970";
+    private static final String getProdByDescriptionQuery = "SELECT * FROM PRODUCT WHERE LENGTH(DESCRIPTION) > 20";
+    private static final String updateProductsDescription = "UPDATE PRODUCT SET DESCRIPTION = ? WHERE ID = ?";
+
     public static void saveProduct() {
-        try (Connection connection = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection connection = createConnection();
              Statement statement = connection.createStatement()) {
 
-            statement.executeUpdate("INSERT INTO PRODUCT VALUES (999, 'toy', 'for children', 60)");
+            statement.executeUpdate(saveProductQuery);
 
         } catch (SQLException e) {
             System.err.println("Something went wrong");
@@ -22,10 +32,10 @@ public class Solution {
     }
 
     public static void deleteProducts() {
-        try (Connection connection = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection connection = createConnection();
              Statement statement = connection.createStatement()) {
 
-            statement.executeUpdate("DELETE FROM PRODUCT WHERE NAME = 'toy'");
+            statement.executeUpdate(deleteProductsQuery);
 
         } catch (SQLException e) {
             System.err.println("Something went wrong");
@@ -34,10 +44,10 @@ public class Solution {
     }
 
     public static void deleteProductsByPrice() {
-        try (Connection connection = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection connection = createConnection();
              Statement statement = connection.createStatement()) {
 
-            statement.executeUpdate("DELETE FROM PRODUCT WHERE PRICE < 100");
+            statement.executeUpdate(deleteProductsByPriceQuery);
 
         } catch (SQLException e) {
             System.err.println("Something went wrong");
@@ -46,64 +56,58 @@ public class Solution {
     }
 
     public static ArrayList<Product> getAllProducts() {
-        ArrayList<Product> allProducts = new ArrayList<>();
-
-        try (Connection connection = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection connection = createConnection();
              Statement statement = connection.createStatement()) {
 
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM PRODUCT");
+            ResultSet resultSet = statement.executeQuery(getAllProductsQuery);
 
-            allProducts = mapToObjects(resultSet);
+            return mapToObjects(resultSet);
 
         } catch (SQLException e) {
             System.err.println("Something went wrong");
             e.printStackTrace();
         }
 
-        return allProducts;
+        return new ArrayList<>();
     }
 
     public static ArrayList<Product> getProductsByPrice() {
-        ArrayList<Product> allProducts = new ArrayList<>();
-
-        try (Connection connection = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection connection = createConnection();
              Statement statement = connection.createStatement()) {
 
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM PRODUCT WHERE PRICE <= 100");
+            ResultSet resultSet = statement.executeQuery(getProductsByPriceQuery);
 
-            allProducts = mapToObjects(resultSet);
+            return mapToObjects(resultSet);
 
         } catch (SQLException e) {
             System.err.println("Something went wrong");
             e.printStackTrace();
         }
 
-        return allProducts;
+        return new ArrayList<>();
     }
 
     public static ArrayList<Product> getProductsByDescription() {
-        ArrayList<Product> allProducts = new ArrayList<>();
-
-        try (Connection connection = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection connection = createConnection();
              Statement statement = connection.createStatement()) {
 
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM PRODUCT WHERE LENGTH(DESCRIPTION) > 50");
+            ResultSet resultSet = statement.executeQuery(getProductsByDescriptionQuery);
 
-            allProducts = mapToObjects(resultSet);
+            return mapToObjects(resultSet);
 
         } catch (SQLException e) {
             System.err.println("Something went wrong");
             e.printStackTrace();
         }
 
-        return allProducts;
+        return new ArrayList<>();
     }
 
     public static void increasePrice() {
-        try (Connection connection = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection connection = createConnection();
              Statement statement = connection.createStatement()) {
 
-            statement.executeUpdate("UPDATE PRODUCT SET PRICE = PRICE + 100 WHERE PRICE < 970");
+            statement.executeUpdate(increasePriceQuery);
 
         } catch (SQLException e) {
             System.err.println("Something went wrong");
@@ -112,18 +116,18 @@ public class Solution {
     }
 
     public static void changeDescription() {
-        try (Connection connection = DriverManager.getConnection(DB_URL, USER, PASS);
+        try (Connection connection = createConnection();
              Statement statement = connection.createStatement()) {
 
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM PRODUCT WHERE LENGTH(DESCRIPTION) > 100");
+            ResultSet resultSet = statement.executeQuery(getProdByDescriptionQuery);
 
             ArrayList<Product> allProducts = mapToObjects(resultSet);
-            for (int i = 0; i < allProducts.size(); i++) {
-                String newDescription = deleteLastSentence(allProducts.get(i).getDescription());
-                String query = "UPDATE PRODUCT SET DESCRIPTION = '" + newDescription + "' WHERE ID = " + allProducts.get(i).getId();
-                statement.execute(query);
+            for (Product product : allProducts) {
+                PreparedStatement preparedStatement = connection.prepareStatement(updateProductsDescription);
+                preparedStatement.setString(1, deleteLastSentence(product.getDescription()));
+                preparedStatement.setLong(2, product.getId());
+                preparedStatement.executeUpdate();
             }
-
         } catch (SQLException e) {
             System.err.println("Something went wrong");
             e.printStackTrace();
@@ -131,12 +135,14 @@ public class Solution {
     }
 
     private static String deleteLastSentence(String text) {
-        for (int i = text.length() - 2; i >= 0; i--) {
-            if (text.charAt(i) == '.' || text.charAt(i) == '!' || text.charAt(i) == '?')
-                return text.substring(0, i + 1);
-        }
+        int lastIndexOfPoint = text.lastIndexOf('.', text.length() - 2);
+        int lastIndexOfQuery = text.lastIndexOf('?', text.length() - 2);
+        int lastIndexOfExclamation = text.lastIndexOf('!', text.length() - 2);
 
-        return "";
+        int lastSentenceStartIndex = lastIndexOfPoint > lastIndexOfQuery ? lastIndexOfPoint : lastIndexOfQuery;
+        lastSentenceStartIndex = lastSentenceStartIndex > lastIndexOfExclamation ? lastSentenceStartIndex : lastIndexOfExclamation;
+
+        return lastSentenceStartIndex == -1 ? "" : text.substring(0, lastSentenceStartIndex + 1);
     }
 
     private static ArrayList<Product> mapToObjects(ResultSet resultSet) throws SQLException {
@@ -152,5 +158,9 @@ public class Solution {
         }
 
         return allProducts;
+    }
+
+    private static Connection createConnection() throws SQLException {
+        return DriverManager.getConnection(DB_URL, USER, PASS);
     }
 }

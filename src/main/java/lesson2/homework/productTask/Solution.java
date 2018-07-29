@@ -9,20 +9,20 @@ public class Solution {
     private static final String USER = "main";
     private static final String PASS = "2016UKRainian";
 
-    private static final String saveProductQuery = "INSERT INTO PRODUCT VALUES (999, 'toy', 'for children', 60)";
-    private static final String deleteProductsQuery = "DELETE FROM PRODUCT WHERE NAME = 'toy'";
-    private static final String deleteProductsByPriceQuery = "DELETE FROM PRODUCT WHERE PRICE < 100";
-    private static final String getAllProductsQuery = "SELECT * FROM PRODUCT";
-    private static final String getProductsByPriceQuery = "SELECT * FROM PRODUCT WHERE PRICE <= 100";
-    private static final String getProductsByDescriptionQuery = "SELECT * FROM PRODUCT WHERE LENGTH(DESCRIPTION) > ?";
-    private static final String increasePriceQuery = "UPDATE PRODUCT SET PRICE = PRICE + 100 WHERE PRICE < 970";
-    private static final String updateProductsDescription = "UPDATE PRODUCT SET DESCRIPTION = ? WHERE ID = ?";
+    private static final String saveProductRequest = "INSERT INTO PRODUCT VALUES (999, 'toy', 'for children', 60)";
+    private static final String deleteProductsRequest = "DELETE FROM PRODUCT WHERE NAME = 'toy'";
+    private static final String deleteProductsByPriceRequest = "DELETE FROM PRODUCT WHERE PRICE < 100";
+    private static final String getAllProductsRequest = "SELECT * FROM PRODUCT";
+    private static final String getProductsByPriceRequest = "SELECT * FROM PRODUCT WHERE PRICE <= 100";
+    private static final String getProductsByDescriptionRequest = "SELECT * FROM PRODUCT WHERE LENGTH(DESCRIPTION) > ?";
+    private static final String increasePriceRequest = "UPDATE PRODUCT SET PRICE = PRICE + 100 WHERE PRICE < 970";
+    private static final String updateProductsDescriptionRequest = "UPDATE PRODUCT SET DESCRIPTION = ? WHERE ID = ?";
 
     public static void saveProduct() {
         try (Connection connection = createConnection();
              Statement statement = connection.createStatement()) {
 
-            statement.executeUpdate(saveProductQuery);
+            statement.executeUpdate(saveProductRequest);
 
         } catch (SQLException e) {
             System.err.println("Something went wrong");
@@ -34,7 +34,7 @@ public class Solution {
         try (Connection connection = createConnection();
              Statement statement = connection.createStatement()) {
 
-            statement.executeUpdate(deleteProductsQuery);
+            statement.executeUpdate(deleteProductsRequest);
 
         } catch (SQLException e) {
             System.err.println("Something went wrong");
@@ -46,7 +46,7 @@ public class Solution {
         try (Connection connection = createConnection();
              Statement statement = connection.createStatement()) {
 
-            statement.executeUpdate(deleteProductsByPriceQuery);
+            statement.executeUpdate(deleteProductsByPriceRequest);
 
         } catch (SQLException e) {
             System.err.println("Something went wrong");
@@ -58,7 +58,7 @@ public class Solution {
         try (Connection connection = createConnection();
              Statement statement = connection.createStatement()) {
 
-            ResultSet resultSet = statement.executeQuery(getAllProductsQuery);
+            ResultSet resultSet = statement.executeQuery(getAllProductsRequest);
 
             return mapToObjects(resultSet);
 
@@ -74,7 +74,7 @@ public class Solution {
         try (Connection connection = createConnection();
              Statement statement = connection.createStatement()) {
 
-            ResultSet resultSet = statement.executeQuery(getProductsByPriceQuery);
+            ResultSet resultSet = statement.executeQuery(getProductsByPriceRequest);
 
             return mapToObjects(resultSet);
 
@@ -89,7 +89,7 @@ public class Solution {
     public static ArrayList<Product> getProductsByDescription() {
         try (Connection connection = createConnection()) {
 
-            PreparedStatement preparedStatement = connection.prepareStatement(getProductsByDescriptionQuery);
+            PreparedStatement preparedStatement = connection.prepareStatement(getProductsByDescriptionRequest);
             preparedStatement.setString(1, "50");
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -107,7 +107,7 @@ public class Solution {
         try (Connection connection = createConnection();
              Statement statement = connection.createStatement()) {
 
-            statement.executeUpdate(increasePriceQuery);
+            statement.executeUpdate(increasePriceRequest);
 
         } catch (SQLException e) {
             System.err.println("Something went wrong");
@@ -118,13 +118,13 @@ public class Solution {
     public static void changeDescription() {
         try (Connection connection = createConnection()) {
 
-            PreparedStatement preparedStatement = connection.prepareStatement(getProductsByDescriptionQuery);
+            PreparedStatement preparedStatement = connection.prepareStatement(getProductsByDescriptionRequest);
             preparedStatement.setString(1, "100");
             ResultSet resultSet = preparedStatement.executeQuery();
 
             ArrayList<Product> allProducts = mapToObjects(resultSet);
             for (Product product : allProducts) {
-                PreparedStatement statement = connection.prepareStatement(updateProductsDescription);
+                PreparedStatement statement = connection.prepareStatement(updateProductsDescriptionRequest);
                 statement.setString(1, deleteLastSentence(product.getDescription()));
                 statement.setLong(2, product.getId());
                 statement.executeUpdate();

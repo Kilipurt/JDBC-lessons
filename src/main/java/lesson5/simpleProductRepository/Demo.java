@@ -1,7 +1,5 @@
 package lesson5.simpleProductRepository;
 
-import lesson5.Product;
-
 public class Demo {
     public static void main(String[] args) {
         ProductRepository productRepository = new ProductRepository();

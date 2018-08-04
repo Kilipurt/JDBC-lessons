@@ -20,6 +20,7 @@ public class Demo {
 
         System.out.println("Done");
 
+        session.getSessionFactory().close();
         session.close();
     }
 }

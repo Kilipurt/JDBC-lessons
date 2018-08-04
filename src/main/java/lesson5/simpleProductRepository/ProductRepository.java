@@ -10,6 +10,7 @@ public class ProductRepository {
         session.save(product);
 
         session.getTransaction().commit();
+        session.getSessionFactory().close();
         session.close();
     }
 
@@ -20,6 +21,7 @@ public class ProductRepository {
         session.delete(session.get(Product.class, id));
 
         session.getTransaction().commit();
+        session.getSessionFactory().close();
         session.close();
     }
 
@@ -30,6 +32,7 @@ public class ProductRepository {
         session.update(product);
 
         session.getTransaction().commit();
+        session.getSessionFactory().close();
         session.close();
     }
 }

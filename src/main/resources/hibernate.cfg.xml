@@ -8,7 +8,10 @@
         <property name="hibernate.connection.url">jdbc:oracle:thin:@gromcode.c4qju9dqz8qa.us-east-2.rds.amazonaws.com:1521:ORCL</property>
         <property name="hibernate.connection.username">main</property>
         <property name="hibernate.connection.password">2016UKRainian</property>
-        <mapping class="lesson5.main.Product"></mapping>
-        <mapping class="lesson5.simpleProductRepository.Product"></mapping>
+        <mapping class="hibernate.lesson1.main.Product"></mapping>
+        <mapping class="hibernate.lesson1.simpleProductRepository.Product"></mapping>
+        <mapping class="hibernate.lesson2.homework.productDAOandHQL.Product"></mapping>
+        <mapping class="hibernate.lesson2.homework.fullProductDAO.Product"></mapping>
+        <mapping class="hibernate.lesson2.homework.productDAOandNativeSQL.Product"></mapping>
     </session-factory>
 </hibernate-configuration>

@@ -84,7 +84,7 @@ public class ProductRepository {
 
             transaction.commit();
         } catch (HibernateException e) {
-            System.err.println("Product " + product.getId() + " was not found");
+            System.err.println("Update is failed");
             System.out.println(e.getMessage());
 
             if (transaction != null)

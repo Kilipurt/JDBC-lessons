@@ -6,13 +6,14 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
-import javax.persistence.OptimisticLockException;
 import javax.persistence.PersistenceException;
 
 public class ProductRepository {
     private static SessionFactory sessionFactory;
 
-    public void save(Product product) {
+    public void save(Product product) throws Exception {
+        validateProduct(product);
+
         Session session = null;
         Transaction transaction = null;
         try {
@@ -72,7 +73,9 @@ public class ProductRepository {
         }
     }
 
-    public void update(Product product) {
+    public void update(Product product) throws Exception {
+        validateProduct(product);
+
         Session session = null;
         Transaction transaction = null;
         try {
@@ -89,7 +92,7 @@ public class ProductRepository {
 
             if (transaction != null)
                 transaction.rollback();
-        } catch (OptimisticLockException e) {
+        } catch (PersistenceException e) {
             System.err.println("Product " + product.getId() + " was not found");
 
             if (transaction != null)
@@ -100,6 +103,11 @@ public class ProductRepository {
             if (session != null)
                 session.close();
         }
+    }
+
+    private void validateProduct(Product product) throws Exception {
+        if (product.getName() == null || product.getName().length() > 20)
+            throw new Exception("Wrong enter name");
     }
 
     private static SessionFactory createSessionFactory() {

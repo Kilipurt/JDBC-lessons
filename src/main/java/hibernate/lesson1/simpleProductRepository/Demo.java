@@ -10,7 +10,11 @@ public class Demo {
 //        product1.setDescription("product for save");
 //        product1.setPrice(70);
 //
-//        productRepository.save(product1);
+//        try {
+//            productRepository.save(product1);
+//        } catch (Exception e) {
+//            System.err.println(e.getMessage());
+//        }
 
         Product product2 = new Product();
         product2.setId(2);
@@ -18,7 +22,11 @@ public class Demo {
         product2.setDescription("product for update");
         product2.setPrice(70);
 
-        productRepository.update(product2);
+        try {
+            productRepository.update(product2);
+        }catch(Exception e){
+            System.err.println(e.getMessage());
+        }
 
 //        productRepository.delete(2);
     }

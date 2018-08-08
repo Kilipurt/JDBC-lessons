@@ -12,14 +12,14 @@ public class Demo {
 //
 //        productRepository.save(product1);
 
-//        Product product2 = new Product();
-//        product2.setId(1);
-//        product2.setName("update test");
-//        product2.setDescription("product for update");
-//        product2.setPrice(70);
-//
-//        productRepository.update(product2);
+        Product product2 = new Product();
+        product2.setId(2);
+        product2.setName("update test");
+        product2.setDescription("product for update");
+        product2.setPrice(70);
 
-        productRepository.delete(1);
+        productRepository.update(product2);
+
+//        productRepository.delete(2);
     }
 }

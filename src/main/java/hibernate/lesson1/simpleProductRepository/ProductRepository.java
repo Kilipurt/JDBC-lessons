@@ -14,7 +14,7 @@ public class ProductRepository {
     public void save(Product product) throws Exception {
         validateProduct(product);
 
-        try(Session session = createSessionFactory().openSession()) {
+        try (Session session = createSessionFactory().openSession()) {
             Transaction transaction = session.getTransaction();
             transaction.begin();
 
@@ -32,7 +32,7 @@ public class ProductRepository {
     }
 
     public void delete(long id) {
-        try(Session session = createSessionFactory().openSession()) {
+        try (Session session = createSessionFactory().openSession()) {
             Transaction transaction = session.getTransaction();
             transaction.begin();
 
@@ -52,7 +52,7 @@ public class ProductRepository {
     public void update(Product product) throws Exception {
         validateProduct(product);
 
-        try(Session session = createSessionFactory().openSession()) {
+        try (Session session = createSessionFactory().openSession()) {
             Transaction transaction = session.getTransaction();
             transaction.begin();
 

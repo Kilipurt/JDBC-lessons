@@ -6,19 +6,27 @@ public class Demo {
     public static void main(String[] args) {
         ProductDAO productDAO = new ProductDAO();
 
-//        Product product = new Product();
-//        product.setName("save");
-//        product.setDescription("save");
-//        product.setPrice(10);
-//
-//        productDAO.save(product);
-//
-//        product.setName("updated");
-//        product.setId(31);
-//
-//        productDAO.update(product);
-//
-//        productDAO.delete(product);
+        Product product = new Product();
+        product.setName("save");
+        product.setDescription("save");
+        product.setPrice(10);
+
+//        try {
+//            productDAO.save(product);
+//        } catch (Exception e) {
+//            System.err.println(e.getMessage());
+//        }
+
+        product.setName("delete");
+        product.setId(47);
+
+//        try {
+//            productDAO.update(product);
+//        } catch (Exception e) {
+//            System.err.println(e.getMessage());
+//        }
+
+        productDAO.delete(product);
 
         Product product1 = new Product();
         product1.setName("save1");
@@ -35,7 +43,11 @@ public class Demo {
         product3.setDescription("save3");
         product3.setPrice(10);
 
-//        productDAO.saveAll(Arrays.asList(product1, product2, product3));
+//        try {
+//            productDAO.saveAll(Arrays.asList(product1, product2, product3));
+//        } catch (Exception e) {
+//            System.err.println(e.getMessage());
+//        }
 
         product1.setId(33);
         product1.setName("updated1");
@@ -46,8 +58,12 @@ public class Demo {
         product3.setId(37);
         product3.setName("updated3");
 
-//        productDAO.updateAll(Arrays.asList(product1, product2, product3));
+//        try {
+//            productDAO.updateAll(Arrays.asList(product1, product2, product3));
+//        } catch (Exception e) {
+//            System.err.println(e.getMessage());
+//        }
 
-        productDAO.deleteAll(Arrays.asList(product1, product2, product3));
+//        productDAO.deleteAll(Arrays.asList(product1, product2, product3));
     }
 }

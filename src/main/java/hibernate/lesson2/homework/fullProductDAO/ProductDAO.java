@@ -6,17 +6,17 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
+import javax.persistence.PersistenceException;
 import java.util.List;
 
 public class ProductDAO {
     private static SessionFactory sessionFactory;
 
-    public Product save(Product product) {
-        Session session = null;
-        Transaction tr = null;
-        try {
-            session = createSessionFactory().openSession();
-            tr = session.getTransaction();
+    public Product save(Product product) throws Exception {
+        validateProduct(product);
+
+        try (Session session = createSessionFactory().openSession()) {
+            Transaction tr = session.getTransaction();
             tr.begin();
 
             session.save(product);
@@ -25,24 +25,16 @@ public class ProductDAO {
         } catch (HibernateException e) {
             System.err.println("Save is failed");
             System.out.println(e.getMessage());
-
-            if (tr != null)
-                tr.rollback();
         } finally {
-            shutDown(session);
+            shutDown();
         }
-
-        System.out.println("Product was saved");
 
         return product;
     }
 
     public Product delete(Product product) {
-        Session session = null;
-        Transaction tr = null;
-        try {
-            session = createSessionFactory().openSession();
-            tr = session.getTransaction();
+        try (Session session = createSessionFactory().openSession()) {
+            Transaction tr = session.getTransaction();
             tr.begin();
 
             session.delete(product);
@@ -51,24 +43,20 @@ public class ProductDAO {
         } catch (HibernateException e) {
             System.err.println("Deleting is failed");
             System.out.println(e.getMessage());
-
-            if (tr != null)
-                tr.rollback();
+        } catch (PersistenceException e) {
+            System.err.println("Product\n" + product.toString() + "\nwas not found");
         } finally {
-            shutDown(session);
+            shutDown();
         }
-
-        System.out.println("Product is deleted");
 
         return product;
     }
 
-    public Product update(Product product) {
-        Session session = null;
-        Transaction tr = null;
-        try {
-            session = createSessionFactory().openSession();
-            tr = session.getTransaction();
+    public Product update(Product product) throws Exception {
+        validateProduct(product);
+
+        try (Session session = createSessionFactory().openSession()) {
+            Transaction tr = session.getTransaction();
             tr.begin();
 
             session.update(product);
@@ -77,28 +65,28 @@ public class ProductDAO {
         } catch (HibernateException e) {
             System.err.println("Update is failed");
             System.out.println(e.getMessage());
-
-            if (tr != null)
-                tr.rollback();
+        } catch (PersistenceException e) {
+            System.err.println("Product " + product.getId() + " was not found");
         } finally {
-            shutDown(session);
+            shutDown();
         }
-
-        System.out.println("Product is updated");
 
         return product;
     }
 
-    public void saveAll(List<Product> products) {
-        Session session = null;
+    public void saveAll(List<Product> products) throws Exception {
+        for (Product product : products) {
+            validateProduct(product);
+        }
+
         Transaction tr = null;
-        try {
-            session = createSessionFactory().openSession();
+        try (Session session = createSessionFactory().openSession()) {
             tr = session.getTransaction();
             tr.begin();
 
             for (Product product : products) {
                 session.save(product);
+                session.flush();
             }
 
             tr.commit();
@@ -109,22 +97,26 @@ public class ProductDAO {
             if (tr != null)
                 tr.rollback();
         } finally {
-            shutDown(session);
+            shutDown();
         }
-
-        System.out.println("Products are saved");
     }
 
-    public void updateAll(List<Product> products) {
-        Session session = null;
+    public void updateAll(List<Product> products) throws Exception {
+        for (Product product : products) {
+            validateProduct(product);
+        }
+
+        long id = 0;
         Transaction tr = null;
-        try {
-            session = createSessionFactory().openSession();
+
+        try (Session session = createSessionFactory().openSession()) {
             tr = session.getTransaction();
             tr.begin();
 
             for (Product product : products) {
+                id = product.getId();
                 session.update(product);
+                session.flush();
             }
 
             tr.commit();
@@ -134,22 +126,25 @@ public class ProductDAO {
 
             if (tr != null)
                 tr.rollback();
-        } finally {
-            shutDown(session);
-        }
+        } catch (PersistenceException e) {
+            System.err.println("Product " + id + " was not found.\n" + e.getMessage());
 
-        System.out.println("Products are updated");
+            if (tr != null)
+                tr.rollback();
+        } finally {
+            shutDown();
+        }
     }
 
     public void deleteAll(List<Product> products) {
-        Session session = null;
+        Product pr = new Product();
         Transaction tr = null;
-        try {
-            session = createSessionFactory().openSession();
+        try (Session session = createSessionFactory().openSession()) {
             tr = session.getTransaction();
             tr.begin();
 
             for (Product product : products) {
+                pr = product;
                 session.delete(product);
             }
 
@@ -160,11 +155,19 @@ public class ProductDAO {
 
             if (tr != null)
                 tr.rollback();
-        } finally {
-            shutDown(session);
-        }
+        } catch (PersistenceException e) {
+            System.err.println("Product\n" + pr.toString() + "\nwas not found");
 
-        System.out.println("Products are deleted");
+            if (tr != null)
+                tr.rollback();
+        } finally {
+            shutDown();
+        }
+    }
+
+    private void validateProduct(Product product) throws Exception {
+        if (product.getName() == null || product.getName().length() > 20)
+            throw new Exception("Wrong enter name");
     }
 
     private SessionFactory createSessionFactory() {
@@ -175,11 +178,8 @@ public class ProductDAO {
         return sessionFactory;
     }
 
-    private void shutDown(Session session) {
+    private void shutDown() {
         if (sessionFactory != null)
             sessionFactory.close();
-
-        if (session != null)
-            session.close();
     }
 }

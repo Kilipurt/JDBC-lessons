@@ -14,11 +14,8 @@ public class ProductRepository {
     public void save(Product product) throws Exception {
         validateProduct(product);
 
-        Session session = null;
-        Transaction transaction = null;
-        try {
-            session = createSessionFactory().openSession();
-            transaction = session.getTransaction();
+        try(Session session = createSessionFactory().openSession()) {
+            Transaction transaction = session.getTransaction();
             transaction.begin();
 
             session.save(product);
@@ -27,28 +24,16 @@ public class ProductRepository {
         } catch (HibernateException e) {
             System.err.println("Save is failed");
             System.out.println(e.getMessage());
-
-            if (transaction != null)
-                transaction.rollback();
         } catch (PersistenceException e) {
             System.err.println("Product " + product.getId() + " already exist");
-
-            if (transaction != null)
-                transaction.rollback();
         } finally {
             shutDown();
-
-            if (session != null)
-                session.close();
         }
     }
 
     public void delete(long id) {
-        Session session = null;
-        Transaction transaction = null;
-        try {
-            session = createSessionFactory().openSession();
-            transaction = session.getTransaction();
+        try(Session session = createSessionFactory().openSession()) {
+            Transaction transaction = session.getTransaction();
             transaction.begin();
 
             session.delete(session.get(Product.class, id));
@@ -57,30 +42,18 @@ public class ProductRepository {
         } catch (HibernateException e) {
             System.err.println("Delete is failed");
             System.out.println(e.getMessage());
-
-            if (transaction != null)
-                transaction.rollback();
         } catch (IllegalArgumentException e) {
             System.err.println("Product " + id + " was not found");
-
-            if (transaction != null)
-                transaction.rollback();
         } finally {
             shutDown();
-
-            if (session != null)
-                session.close();
         }
     }
 
     public void update(Product product) throws Exception {
         validateProduct(product);
 
-        Session session = null;
-        Transaction transaction = null;
-        try {
-            session = createSessionFactory().openSession();
-            transaction = session.getTransaction();
+        try(Session session = createSessionFactory().openSession()) {
+            Transaction transaction = session.getTransaction();
             transaction.begin();
 
             session.update(product);
@@ -89,19 +62,10 @@ public class ProductRepository {
         } catch (HibernateException e) {
             System.err.println("Update is failed");
             System.out.println(e.getMessage());
-
-            if (transaction != null)
-                transaction.rollback();
         } catch (PersistenceException e) {
             System.err.println("Product " + product.getId() + " was not found");
-
-            if (transaction != null)
-                transaction.rollback();
         } finally {
             shutDown();
-
-            if (session != null)
-                session.close();
         }
     }
 
@@ -110,7 +74,7 @@ public class ProductRepository {
             throw new Exception("Wrong enter name");
     }
 
-    private static SessionFactory createSessionFactory() {
+    private SessionFactory createSessionFactory() {
         if (sessionFactory == null) {
             sessionFactory = new Configuration().configure().buildSessionFactory();
         }

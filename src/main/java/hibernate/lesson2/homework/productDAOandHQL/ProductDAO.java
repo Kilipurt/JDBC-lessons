@@ -21,196 +21,120 @@ public class ProductDAO {
     private static final String findByPriceSortedDescQuery = "FROM hibernate.lesson2.homework.productDAOandHQL.Product P WHERE P.price BETWEEN :minValue AND :maxValue ORDER BY P.price DESC";
 
     public Product findById(Long id) {
-        Product product = null;
-        Session session = null;
-        Transaction tr = null;
-        try {
-            session = createSessionFactory().openSession();
-            tr = session.getTransaction();
-            tr.begin();
+        try (Session session = createSessionFactory().openSession()) {
 
             Query query = session.createQuery(findByIdQuery);
             query.setParameter("id", id);
 
             if (query.list().size() != 0)
-                product = (Product) query.list().get(0);
+                return (Product) query.list().get(0);
 
-            tr.commit();
         } catch (HibernateException e) {
             System.err.println("Something went wrong");
             System.out.println(e.getMessage());
-
-            if (tr != null)
-                tr.rollback();
         } finally {
-            shutDown(session);
+            shutDown();
         }
 
-        return product;
+        return null;
     }
 
     public List<Product> findByName(String name) {
-        Session session = null;
-        Transaction tr = null;
-        try {
-            session = createSessionFactory().openSession();
-            tr = session.getTransaction();
-            tr.begin();
+        try (Session session = createSessionFactory().openSession()) {
 
             Query query = session.createQuery(findByNameQuery);
             query.setParameter("name", name);
-
-            tr.commit();
 
             return query.list();
         } catch (HibernateException e) {
             System.err.println("Something went wrong");
             System.out.println(e.getMessage());
-
-            if (tr != null)
-                tr.rollback();
         } finally {
-            shutDown(session);
+            shutDown();
         }
 
         return null;
     }
 
     public List<Product> findByContainedName(String name) {
-        Session session = null;
-        Transaction tr = null;
-        try {
-            session = createSessionFactory().openSession();
-            tr = session.getTransaction();
-            tr.begin();
-
+        try (Session session = createSessionFactory().openSession()) {
 
             Query query = session.createQuery(findByContainedNameQuery);
             query.setParameter("name", "%" + name + "%");
-
-            tr.commit();
 
             return query.list();
         } catch (HibernateException e) {
             System.err.println("Something went wrong");
             System.out.println(e.getMessage());
-
-            if (tr != null)
-                tr.rollback();
         } finally {
-            shutDown(session);
+            shutDown();
         }
 
         return null;
     }
 
     public List<Product> findByPrice(int price, int delta) {
-        Session session = null;
-        Transaction tr = null;
-        try {
-            session = createSessionFactory().openSession();
-            tr = session.getTransaction();
-            tr.begin();
-
+        try (Session session = createSessionFactory().openSession()) {
 
             Query query = session.createQuery(findByPriceQuery);
             query.setParameter("minValue", price - delta);
             query.setParameter("maxValue", price + delta);
 
-            tr.commit();
-
             return query.list();
         } catch (HibernateException e) {
             System.err.println("Something went wrong");
             System.out.println(e.getMessage());
-
-            if (tr != null)
-                tr.rollback();
         } finally {
-            shutDown(session);
+            shutDown();
         }
 
         return null;
     }
 
     public List<Product> findByNameSortedAsc() {
-        Session session = null;
-        Transaction tr = null;
-        try {
-            session = createSessionFactory().openSession();
-            tr = session.getTransaction();
-            tr.begin();
-
+        try (Session session = createSessionFactory().openSession()) {
 
             Query query = session.createQuery(findByNameSortedAscQuery);
-
-            tr.commit();
 
             return query.list();
         } catch (HibernateException e) {
             System.err.println("Something went wrong");
             System.out.println(e.getMessage());
-
-            if (tr != null)
-                tr.rollback();
         } finally {
-            shutDown(session);
+            shutDown();
         }
 
         return null;
     }
 
     public List<Product> findByNameSortedDesc() {
-        Session session = null;
-        Transaction tr = null;
-        try {
-            session = createSessionFactory().openSession();
-            tr = session.getTransaction();
-            tr.begin();
-
-
+        try (Session session = createSessionFactory().openSession()) {
             Query query = session.createQuery(findByNameSortedDescQuery);
-
-            tr.commit();
 
             return query.list();
         } catch (HibernateException e) {
             System.err.println("Something went wrong");
             System.out.println(e.getMessage());
-
-            if (tr != null)
-                tr.rollback();
         } finally {
-            shutDown(session);
+            shutDown();
         }
 
         return null;
     }
 
     public List<Product> findByPriceSortedDesc(int price, int delta) {
-        Session session = null;
-        Transaction tr = null;
-        try {
-            session = createSessionFactory().openSession();
-            tr = session.getTransaction();
-            tr.begin();
-
+        try (Session session = createSessionFactory().openSession()) {
 
             Query query = session.createQuery(findByPriceSortedDescQuery);
             query.setParameter("minValue", price - delta);
             query.setParameter("maxValue", price + delta);
 
-            tr.commit();
-
             return query.list();
         } catch (HibernateException e) {
             System.err.println("Something went wrong");
             System.out.println(e.getMessage());
-
-            if (tr != null)
-                tr.rollback();
         } finally {
-            shutDown(session);
+            shutDown();
         }
 
         return null;
@@ -224,11 +148,8 @@ public class ProductDAO {
         return sessionFactory;
     }
 
-    private void shutDown(Session session) {
+    private void shutDown() {
         if (sessionFactory != null)
             sessionFactory.close();
-
-        if (session != null)
-            session.close();
     }
 }

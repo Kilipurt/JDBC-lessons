@@ -13,7 +13,8 @@ public class ProductDAO {
     private static SessionFactory sessionFactory;
 
     public Product save(Product product) throws Exception {
-        validateProduct(product);
+        if (product.getName() == null || product.getName().length() > 20)
+            throw new Exception("Wrong enter name");
 
         try (Session session = createSessionFactory().openSession()) {
             Transaction tr = session.getTransaction();
@@ -53,7 +54,8 @@ public class ProductDAO {
     }
 
     public Product update(Product product) throws Exception {
-        validateProduct(product);
+        if (product.getName() == null || product.getName().length() > 20)
+            throw new Exception("Wrong enter name");
 
         try (Session session = createSessionFactory().openSession()) {
             Transaction tr = session.getTransaction();
@@ -76,7 +78,8 @@ public class ProductDAO {
 
     public void saveAll(List<Product> products) throws Exception {
         for (Product product : products) {
-            validateProduct(product);
+            if (product.getName() == null || product.getName().length() > 20)
+                throw new Exception("Wrong enter name");
         }
 
         Transaction tr = null;
@@ -103,7 +106,8 @@ public class ProductDAO {
 
     public void updateAll(List<Product> products) throws Exception {
         for (Product product : products) {
-            validateProduct(product);
+            if (product.getName() == null || product.getName().length() > 20)
+                throw new Exception("Wrong enter name");
         }
 
         long id = 0;
@@ -163,11 +167,6 @@ public class ProductDAO {
         } finally {
             shutDown();
         }
-    }
-
-    private void validateProduct(Product product) throws Exception {
-        if (product.getName() == null || product.getName().length() > 20)
-            throw new Exception("Wrong enter name");
     }
 
     private SessionFactory createSessionFactory() {

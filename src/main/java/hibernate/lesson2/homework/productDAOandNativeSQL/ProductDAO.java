@@ -19,9 +19,6 @@ public class ProductDAO {
 
     public Product findById(Long id) {
         try (Session session = createSessionFactory().openSession()) {
-            Transaction tr = session.getTransaction();
-            tr.begin();
-
             NativeQuery query = session.createNativeQuery(findByIdQuery);
             query.addEntity(Product.class);
             query.setParameter("id", id);
@@ -29,7 +26,6 @@ public class ProductDAO {
             if (query.list().size() != 0)
                 return (Product) query.list().get(0);
 
-            tr.commit();
         } catch (HibernateException e) {
             System.err.println("Something went wrong");
             System.out.println(e.getMessage());
@@ -42,14 +38,9 @@ public class ProductDAO {
 
     public List<Product> findByName(String name) {
         try (Session session = createSessionFactory().openSession()) {
-            Transaction tr = session.getTransaction();
-            tr.begin();
-
             NativeQuery query = session.createNativeQuery(findByNameQuery);
             query.addEntity(Product.class);
             query.setParameter("name", name);
-
-            tr.commit();
 
             return query.list();
         } catch (HibernateException e) {
@@ -64,14 +55,9 @@ public class ProductDAO {
 
     public List<Product> findByContainedName(String name) {
         try (Session session = createSessionFactory().openSession()) {
-            Transaction tr = session.getTransaction();
-            tr.begin();
-
             NativeQuery query = session.createNativeQuery(findByContainedNameQuery);
             query.addEntity(Product.class);
             query.setParameter("name", "%" + name + "%");
-
-            tr.commit();
 
             return query.list();
         } catch (HibernateException e) {
@@ -86,15 +72,10 @@ public class ProductDAO {
 
     public List<Product> findByPrice(int price, int delta) {
         try (Session session = createSessionFactory().openSession()) {
-            Transaction tr = session.getTransaction();
-            tr.begin();
-
             NativeQuery query = session.createNativeQuery(findByPriceQuery);
             query.addEntity(Product.class);
             query.setParameter("minValue", price - delta);
             query.setParameter("maxValue", price + delta);
-
-            tr.commit();
 
             return query.list();
         } catch (HibernateException e) {
@@ -109,13 +90,8 @@ public class ProductDAO {
 
     public List<Product> findByNameSortedAsc() {
         try (Session session = createSessionFactory().openSession()) {
-            Transaction tr = session.getTransaction();
-            tr.begin();
-
             NativeQuery query = session.createNativeQuery(findByNameSortedAscQuery);
             query.addEntity(Product.class);
-
-            tr.commit();
 
             return query.list();
         } catch (HibernateException e) {
@@ -130,13 +106,8 @@ public class ProductDAO {
 
     public List<Product> findByNameSortedDesc() {
         try (Session session = createSessionFactory().openSession()) {
-            Transaction tr = session.getTransaction();
-            tr.begin();
-
             NativeQuery query = session.createNativeQuery(findByNameSortedDescQuery);
             query.addEntity(Product.class);
-
-            tr.commit();
 
             return query.list();
         } catch (HibernateException e) {
@@ -151,15 +122,10 @@ public class ProductDAO {
 
     public List<Product> findByPriceSortedDesc(int price, int delta) {
         try (Session session = createSessionFactory().openSession()) {
-            Transaction tr = session.getTransaction();
-            tr.begin();
-
             NativeQuery query = session.createNativeQuery(findByPriceSortedDescQuery);
             query.addEntity(Product.class);
             query.setParameter("minValue", price - delta);
             query.setParameter("maxValue", price + delta);
-
-            tr.commit();
 
             return query.list();
         } catch (HibernateException e) {

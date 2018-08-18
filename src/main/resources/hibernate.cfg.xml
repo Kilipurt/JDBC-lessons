@@ -13,5 +13,7 @@
         <mapping class="hibernate.lesson2.homework.productDAOandHQL.Product"></mapping>
         <mapping class="hibernate.lesson2.homework.fullProductDAO.Product"></mapping>
         <mapping class="hibernate.lesson2.homework.productDAOandNativeSQL.Product"></mapping>
+        <mapping class="hibernate.lesson3.entities.Hotel"></mapping>
+        <mapping class="hibernate.lesson3.entities.Room"></mapping>
     </session-factory>
 </hibernate-configuration>

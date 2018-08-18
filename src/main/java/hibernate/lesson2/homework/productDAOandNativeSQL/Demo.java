@@ -6,8 +6,8 @@ public class Demo {
     public static void main(String[] args) {
         ProductDAO productDAO = new ProductDAO();
 
-//        Product product = productDAO.findById(25L);
-//        System.out.println(product.toString());
+        Product product = productDAO.findById(25L);
+        System.out.println(product.toString());
 
 //        List<Product> products = productDAO.findByName("table new");
 
@@ -19,10 +19,10 @@ public class Demo {
 
 //        List<Product> products = productDAO.findByNameSortedDesc();
 
-        List<Product> products = productDAO.findByPriceSortedDesc(70, 10);
+//        List<Product> products = productDAO.findByPriceSortedDesc(70, 10);
 
-        for (Product product : products) {
-            System.out.println(product);
-        }
+//        for (Product product : products) {
+//            System.out.println(product);
+//        }
     }
 }

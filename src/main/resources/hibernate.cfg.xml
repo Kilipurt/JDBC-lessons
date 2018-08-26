@@ -3,17 +3,22 @@
         "-//Hibernate/Hiberanate Configuration DTD 3.0//EN"
         "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
-    <session-factory>
-        <property name="hibernate.connection.driver_class">oracle.jdbc.driver.OracleDriver</property>
-        <property name="hibernate.connection.url">jdbc:oracle:thin:@gromcode.c4qju9dqz8qa.us-east-2.rds.amazonaws.com:1521:ORCL</property>
-        <property name="hibernate.connection.username">main</property>
-        <property name="hibernate.connection.password">2016UKRainian</property>
-        <mapping class="hibernate.lesson1.main.Product"></mapping>
-        <mapping class="hibernate.lesson1.simpleProductRepository.Product"></mapping>
-        <mapping class="hibernate.lesson2.homework.productDAOandHQL.Product"></mapping>
-        <mapping class="hibernate.lesson2.homework.fullProductDAO.Product"></mapping>
-        <mapping class="hibernate.lesson2.homework.productDAOandNativeSQL.Product"></mapping>
-        <mapping class="hibernate.lesson3.entities.Hotel"></mapping>
-        <mapping class="hibernate.lesson3.entities.Room"></mapping>
-    </session-factory>
+  <session-factory>
+    <property name="hibernate.connection.driver_class">oracle.jdbc.driver.OracleDriver</property>
+    <property name="hibernate.connection.url">jdbc:oracle:thin:@gromcode.c4qju9dqz8qa.us-east-2.rds.amazonaws.com:1521:ORCL</property>
+    <property name="hibernate.connection.username">main</property>
+    <property name="hibernate.connection.password">2016UKRainian</property>
+    <property name="show_sql">true</property>
+    <mapping class="hibernate.lesson1.main.Product"></mapping>
+    <mapping class="hibernate.lesson1.simpleProductRepository.Product"></mapping>
+    <mapping class="hibernate.lesson2.homework.productDAOandHQL.Product"></mapping>
+    <mapping class="hibernate.lesson2.homework.fullProductDAO.Product"></mapping>
+    <mapping class="hibernate.lesson2.homework.productDAOandNativeSQL.Product"></mapping>
+    <mapping class="hibernate.lesson3.entities.Hotel"></mapping>
+    <mapping class="hibernate.lesson3.entities.Room"></mapping>
+    <mapping class="hibernate.lesson4.entities.Room"></mapping>
+    <mapping class="hibernate.lesson4.entities.Hotel"></mapping>
+    <mapping class="hibernate.lesson4.entities.User"></mapping>
+    <mapping class="hibernate.lesson4.entities.Order"></mapping>
+  </session-factory>
 </hibernate-configuration>

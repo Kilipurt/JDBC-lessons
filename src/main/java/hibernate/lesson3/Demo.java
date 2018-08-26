@@ -22,8 +22,8 @@ public class Demo {
 
 //        hotelDAO.delete(2);
 
-        hotel.setId(4);
-        hotel.setName("New Germanskii hotel");
+//        hotel.setId(4);
+//        hotel.setName("New Germanskii hotel");
 
 //        hotelDAO.update(null);
 
@@ -51,13 +51,20 @@ public class Demo {
         room.setPetsAllowed(0);
         room.setPrice(1000);
 
-        roomDAO.save(room1);
+//        roomDAO.save(room1);
 
 //        room.setPrice(5000);
 //        room.setId(12);
 //        room.setHotel(null);
 
 //        roomDAO.update(null);
+
+
+        try {
+            System.out.println(roomDAO.findById(12).toString());
+        }  catch (NullPointerException e) {
+            System.err.println(e.getMessage());
+        }
 
 //        try {
 //            System.out.println(roomDAO.findById(2).toString());
